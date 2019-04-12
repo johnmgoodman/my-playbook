@@ -1,0 +1,57 @@
+#!/usr/bin/env python3
+
+from subprocess import getoutput, run
+import re
+
+PERCENT_HIGH=88
+PERCENT_MID=63
+PERCENT_LESS=38
+PERCENT_LOW=13
+
+PERCENT_GOOD=60
+PERCENT_BAD=20
+PERCENT_CRITICAL=10
+
+
+def notify_battery_critical():
+  urgency = 'critical'
+  summary = 'Battery low'
+  body = 'Plug in power supply'
+  run(['/usr/bin/notify-send', '-u', urgency, summary, body])
+
+def battery_icon(percent):
+  if percent < PERCENT_LESS:
+    return '\uf244' # empty
+  if percent < PERCENT_LOW:
+    return '\uf243' # quarter
+  if percent < PERCENT_MID:
+    return '\uf242' # half
+  if percent < PERCENT_HIGH:
+    return '\uf241' # three quarters
+  # otherwise...
+  return '\uf240' # full
+
+def battery_color(percent):
+  if percent > PERCENT_GOOD:
+    return '#00FF00' # green
+  if percent > PERCENT_BAD:
+    return '#FFFF00' # yellow
+  return '#FF0000' # red
+
+def parse_acpi():
+  acpi_out = getoutput(['acpi'])
+  acpi_info_match = re.match(r'Battery 0: (\w+), (\d+)\%(, (\d{2}:\d{2}:\d{2})?)?', acpi_out)
+  #                        status,                  int(percent),           time_remaining
+  return acpi_info_match.group(1), int(acpi_info_match.group(2)), acpi_info_match.group(3)
+
+
+status, percent, time_remaining = parse_acpi()
+pango = '<span color="{}"><span font="FontAwesome">{}</span> <span>{}%</span></span>'.format(battery_color(percent), battery_icon(percent), percent)
+if status == 'Charging':
+  pango = '<span font="FontAwesome" color="#00FFFF">\uf1e6</span> {}'.format(pango)
+elif status == 'Unknown':
+  pango = '<span font="FontAwesome" color="#00FFFF">?</span> {}'.format(pango)
+if percent < PERCENT_CRITICAL:
+  notify_battery_critical()
+
+print(pango)

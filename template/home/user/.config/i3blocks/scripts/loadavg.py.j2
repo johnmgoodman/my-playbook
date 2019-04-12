@@ -1,0 +1,22 @@
+#!/usr/bin/env python3
+
+def parse_loadavg():
+  with open('/proc/loadavg', 'r') as f:
+    content = f.read()
+  one, five, ten, processes, last_process = content.rstrip().split(' ')
+  return float(one), float(five), float(ten), processes, last_process
+
+def load_color(load):
+  if load > 1.00:
+    return '#FF0000'
+  return '#00FF00'
+
+def pango_loadavg(load, show_load=False):
+  if show_load:
+    return'<span color="{}"><span font="FontAwesome">\uf2db</span> {}</span>'.format(load_color(load), load)
+  return '<span color="{}"><span font="FontAwesome">\uf2db</span> </span>'.format(load_color(load))
+
+one, five, ten, processes, last_process = parse_loadavg()
+
+pango = "{} {} {}".format(pango_loadavg(one),pango_loadavg(five),pango_loadavg(ten))
+print(pango)

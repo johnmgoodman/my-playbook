@@ -1,0 +1,47 @@
+---
+- hosts: all
+  connection: local
+  tasks:
+  
+  # Custom bash prompt
+  - name: copy ps1 script into ~/.config/
+    template:
+      src: template/home/user/.config/ps1.sh.j2
+      dest: "{{ansible_facts.user_dir}}/.config/ps1.sh"
+  - name: source ps1 script from bashrc
+    lineinfile:
+      path: "{{ansible_facts.user_dir}}/.bashrc"
+      line: 'source ~/.config/ps1.sh'
+  
+  # i3blocks
+  - name: apt install i3blocks
+    apt:
+      name: i3blocks
+    when: ansible_facts.user_id == "root"
+  - name: copy i3blocks python files
+    template:
+      src: "template/home/user/.config/i3blocks/scripts/{{item}}.j2"
+      dest: "{{ansible_facts.user_dir}}/.config/i3blocks/scripts/{{item}}"
+      mode: '0755'
+    loop: ["battery.py", "disk.py", "loadavg.py", "memory.py", "network.py"]
+  - name: copy i3blocks config
+    template:
+      src: "template/home/user/.config/i3blocks/config.j2"
+      dest: "{{ansible_facts.user_dir}}/.config/i3blocks/config"
+  - name: configure i3 to use i3blocks
+    blockinfile:
+      path: "{{ansible_facts.user_dir}}/.config/i3/config"
+      backup: yes
+      block: |
+        bar {
+          status_command i3blocks
+          tray_output primary
+          colors {
+            background #0e0e0e
+          }
+        }
+
+  # blah blah
+  - name: blah
+    debug:
+      msg: "blah"
