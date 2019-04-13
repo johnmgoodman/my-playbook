@@ -65,6 +65,10 @@
       - "bindsym {{mute_volume_keysym}} exec amixer -q set Master toggle && pkill -SIGRTMIN+10 i3blocks"
   
   # i3 keyboard bindsyms: locking/power
+  - name: make dir
+    file:
+      state: directory
+      path: "{{ansible_facts.user_dir}}/scripts"
   - name: apt install i3lock
     apt:
       name: i3lock
@@ -83,6 +87,10 @@
       - "bindsym {{lock_screen_keysym}} exec {{ansible_facts.user_dir}}/scripts/lock.sh"
   
   # i3 keyboard bindsyms: screen capture
+  - name: make dir
+    file:
+      state: directory
+      path: "{{ansible_facts.user_dir}}/scripts/screenshot"
   - name: apt install scrot
     apt:
       name: scrot
