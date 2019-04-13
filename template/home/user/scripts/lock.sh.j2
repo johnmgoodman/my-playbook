@@ -1,0 +1,19 @@
+#!/bin/bash
+
+lock() {
+  i3lock \
+    -c 000000 \
+    --show-failed-attempts \
+    --ignore-empty-password \
+    -i {{ i3lock_background_image }} \
+    --nofork;
+}
+
+revert() {
+  xset dpms 0 0 0
+}
+
+trap revert SIGHUP SIGINT SIGTERM
+xset +dpms dpms 5 5 5
+lock
+revert
