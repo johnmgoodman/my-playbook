@@ -1,38 +1,18 @@
 ---
 - hosts: all
-  roles:
-    - bash-prompt
-    - i3blocks-bar
-    - i3-volume
-  connection: local
   vars:
 
     lock_screen_keysym: XF86ScreenSaver
     i3lock_background_image: "{{ansible_facts.user_dir}}/Pictures/sunrise.png"
+  roles:
+    - bash-prompt
+    - i3blocks-bar
+    - i3-volume
+    - i3-dpms
+  connection: local
   tasks:
   
-  # i3: locking/power
-  - name: make dir
-    file:
-      state: directory
-      path: "{{ansible_facts.user_dir}}/scripts"
-  - name: apt install i3lock
-    apt:
-      name: i3lock
-    become: yes
-  - name: copy lock script to ~/scripts/
-    template:
-      src: "template/home/user/scripts/{{item}}.j2"
-      dest: "{{ansible_facts.user_dir}}/scripts/{{item}}"
-      mode: '0755'
-    loop: ["lock.sh", "autolock.sh"]
-  - name: add screen locking / sleep bindsyms to i3
-    lineinfile:
-      path: "{{ansible_facts.user_dir}}/.config/i3/config"
-      line: "{{item}}"
-    loop:
-      - "bindsym {{lock_screen_keysym}} exec {{ansible_facts.user_dir}}/scripts/lock.sh"
-      - "exec --no-startup-id {{ansible_facts.user_dir}}/scripts/autolock.sh"
+
   
   # i3 keyboard bindsyms: screen capture
   - name: make dir

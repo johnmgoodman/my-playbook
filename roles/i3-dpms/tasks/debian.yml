@@ -1,0 +1,4 @@
+- name: apt install i3lock
+  apt:
+    name: i3lock
+  become: yes

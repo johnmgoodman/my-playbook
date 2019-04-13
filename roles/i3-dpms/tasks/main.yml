@@ -1,0 +1,22 @@
+# i3: locking/power
+
+- import_tasks: debian.yml
+  when: ansible_facts['os_family']|lower == 'debian'
+
+- name: make dir
+  file:
+    state: directory
+    path: "{{ansible_facts.user_dir}}/scripts"
+- name: copy lock script to ~/scripts/
+  template:
+    src: "templates/home/user/scripts/{{item}}.j2"
+    dest: "{{ansible_facts.user_dir}}/scripts/{{item}}"
+    mode: '0755'
+  loop: ["lock.sh", "autolock.sh"]
+- name: add screen locking / sleep bindsyms to i3
+  lineinfile:
+    path: "{{ansible_facts.user_dir}}/.config/i3/config"
+    line: "{{item}}"
+  loop:
+    - "bindsym {{lock_screen_keysym}} exec {{ansible_facts.user_dir}}/scripts/lock.sh"
+    - "exec --no-startup-id {{ansible_facts.user_dir}}/scripts/autolock.sh"
