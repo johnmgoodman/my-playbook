@@ -64,7 +64,7 @@
       - "bindsym {{lower_volume_keysym}} exec amixer -q set Master 10%- && pkill -SIGRTMIN+10 i3blocks"
       - "bindsym {{mute_volume_keysym}} exec amixer -q set Master toggle && pkill -SIGRTMIN+10 i3blocks"
   
-  # i3 keyboard bindsyms: locking/power
+  # i3: locking/power
   - name: make dir
     file:
       state: directory
@@ -78,13 +78,14 @@
       src: "template/home/user/scripts/{{item}}.j2"
       dest: "{{ansible_facts.user_dir}}/scripts/{{item}}"
       mode: '0755'
-    loop: ["lock.sh"]
+    loop: ["lock.sh", "autolock.sh"]
   - name: add screen locking / sleep bindsyms to i3
     lineinfile:
       path: "{{ansible_facts.user_dir}}/.config/i3/config"
       line: "{{item}}"
     loop:
       - "bindsym {{lock_screen_keysym}} exec {{ansible_facts.user_dir}}/scripts/lock.sh"
+      - "exec --no-startup-id {{ansible_facts.user_dir}}/scripts/autolock.sh"
   
   # i3 keyboard bindsyms: screen capture
   - name: make dir
