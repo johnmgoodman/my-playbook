@@ -1,0 +1,9 @@
+# Custom bash prompt
+- name: copy ps1 script into ~/.config/
+  template:
+    src: templates/home/user/.config/ps1.sh.j2
+    dest: "{{ansible_facts.user_dir}}/.config/ps1.sh"
+- name: source ps1 script from bashrc
+  lineinfile:
+    path: "{{ansible_facts.user_dir}}/.bashrc"
+    line: 'source ~/.config/ps1.sh'

@@ -1,5 +1,7 @@
 ---
 - hosts: all
+  roles:
+    - bash-prompt
   connection: local
   vars:
     raise_volume_keysym: XF86AudioRaiseVolume
@@ -9,17 +11,7 @@
     lock_screen_keysym: XF86ScreenSaver
     i3lock_background_image: "{{ansible_facts.user_dir}}/Pictures/sunrise.png"
   tasks:
-  
-  # Custom bash prompt
-  - name: copy ps1 script into ~/.config/
-    template:
-      src: template/home/user/.config/ps1.sh.j2
-      dest: "{{ansible_facts.user_dir}}/.config/ps1.sh"
-  - name: source ps1 script from bashrc
-    lineinfile:
-      path: "{{ansible_facts.user_dir}}/.bashrc"
-      line: 'source ~/.config/ps1.sh'
-  
+
   # i3blocks
   #- name: mkdir -p ~/.config/i3blocks/scripts
   #  shell: mkdir -p ~/.config/i3blocks/scripts
