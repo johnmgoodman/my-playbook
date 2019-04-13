@@ -3,25 +3,13 @@
   roles:
     - bash-prompt
     - i3blocks-bar
+    - i3-volume
   connection: local
   vars:
-    raise_volume_keysym: XF86AudioRaiseVolume
-    lower_volume_keysym: XF86AudioLowerVolume
-    mute_volume_keysym: XF86AudioMute
 
     lock_screen_keysym: XF86ScreenSaver
     i3lock_background_image: "{{ansible_facts.user_dir}}/Pictures/sunrise.png"
   tasks:
-
-  # i3 keyboard bindsyms: volume
-  - name: add volume control bindsyms to i3 config
-    lineinfile:
-      path: "{{ansible_facts.user_dir}}/.config/i3/config"
-      line: "{{item}}"
-    loop:
-      - "bindsym {{raise_volume_keysym}} exec amixer -q set Master 10%+ unmute && pkill -SIGRTMIN+10 i3blocks"
-      - "bindsym {{lower_volume_keysym}} exec amixer -q set Master 10%- && pkill -SIGRTMIN+10 i3blocks"
-      - "bindsym {{mute_volume_keysym}} exec amixer -q set Master toggle && pkill -SIGRTMIN+10 i3blocks"
   
   # i3: locking/power
   - name: make dir

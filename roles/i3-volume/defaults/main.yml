@@ -1,0 +1,4 @@
+---
+raise_volume_keysym: XF86AudioRaiseVolume
+lower_volume_keysym: XF86AudioLowerVolume
+mute_volume_keysym: XF86AudioMute

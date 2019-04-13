@@ -1,0 +1,9 @@
+# i3 keyboard bindsyms: volume
+- name: add volume control bindsyms to i3 config
+  lineinfile:
+    path: "{{ansible_facts.user_dir}}/.config/i3/config"
+    line: "{{item}}"
+  loop:
+    - "bindsym {{raise_volume_keysym}} exec amixer -q set Master 10%+ unmute && pkill -SIGRTMIN+10 i3blocks"
+    - "bindsym {{lower_volume_keysym}} exec amixer -q set Master 10%- && pkill -SIGRTMIN+10 i3blocks"
+    - "bindsym {{mute_volume_keysym}} exec amixer -q set Master toggle && pkill -SIGRTMIN+10 i3blocks"
