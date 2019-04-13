@@ -14,6 +14,12 @@
       line: 'source ~/.config/ps1.sh'
   
   # i3blocks
+  #- name: mkdir -p ~/.config/i3blocks/scripts
+  #  shell: mkdir -p ~/.config/i3blocks/scripts
+  - name: make dir
+    file:
+      state: directory
+      path: "{{ansible_facts.user_dir}}/.config/i3blocks/scripts"
   - name: apt install i3blocks
     apt:
       name: i3blocks
