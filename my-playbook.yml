@@ -1,41 +1,15 @@
 ---
 - hosts: all
   vars:
-
-    lock_screen_keysym: XF86ScreenSaver
     i3lock_background_image: "{{ansible_facts.user_dir}}/Pictures/sunrise.png"
   roles:
     - bash-prompt
     - i3blocks-bar
     - i3-volume
     - i3-dpms
+    - i3-screencap
   connection: local
   tasks:
-  
-
-  
-  # i3 keyboard bindsyms: screen capture
-  - name: make dir
-    file:
-      state: directory
-      path: "{{ansible_facts.user_dir}}/scripts/screenshot"
-  - name: apt install scrot
-    apt:
-      name: scrot
-    become: yes
-  - name: copy screenshot script to ~/scripts/
-    template:
-      src: "template/home/user/scripts/screenshot/{{item}}.j2"
-      dest: "{{ansible_facts.user_dir}}/scripts/screenshot/{{item}}"
-      mode: '0755'
-    loop: ["screenshot.py"]
-  - name: add screen capture bindsyms to i3 config
-    lineinfile:
-      path: "{{ansible_facts.user_dir}}/.config/i3/config"
-      line: "{{item}}"
-    loop:
-      - "bindsym Print exec --no-startup-id {{ansible_facts.user_dir}}/scripts/screenshot/screenshot.py screen"
-      - "bindsym Shift+Print exec --no-startup-id {{ansible_facts.user_dir}}/scripts/screenshot/screenshot.py selection"
   
   # wicd-on
   - name: make dir

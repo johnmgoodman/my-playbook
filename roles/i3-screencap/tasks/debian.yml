@@ -1,0 +1,4 @@
+- name: apt install scrot
+  apt:
+    name: scrot
+  become: yes

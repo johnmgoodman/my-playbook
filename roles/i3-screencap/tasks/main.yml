@@ -1,0 +1,22 @@
+# i3 keyboard bindsyms: screen capture
+
+- import_tasks: debian.yml
+  when: ansible_facts['os_family']|lower == 'debian'
+
+- name: make dir
+  file:
+    state: directory
+    path: "{{ansible_facts.user_dir}}/scripts/screenshot"
+- name: copy screenshot script to ~/scripts/
+  template:
+    src: "templates/home/user/scripts/screenshot/{{item}}.j2"
+    dest: "{{ansible_facts.user_dir}}/scripts/screenshot/{{item}}"
+    mode: '0755'
+  loop: ["screenshot.py"]
+- name: add screen capture bindsyms to i3 config
+  lineinfile:
+    path: "{{ansible_facts.user_dir}}/.config/i3/config"
+    line: "{{item}}"
+  loop:
+    - "bindsym Print exec --no-startup-id {{ansible_facts.user_dir}}/scripts/screenshot/screenshot.py screen"
+    - "bindsym Shift+Print exec --no-startup-id {{ansible_facts.user_dir}}/scripts/screenshot/screenshot.py selection"

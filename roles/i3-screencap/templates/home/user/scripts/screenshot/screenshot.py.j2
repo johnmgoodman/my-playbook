@@ -1,0 +1,57 @@
+#!/usr/bin/env python3
+""" Use in i3wm with:
+bindsym --release Print exec --no-startup-id screenshot.py
+
+
+screenshot.py [type:screen(default)|selection]
+
+"""
+import sys
+import os
+from subprocess import Popen, PIPE
+from tempfile import NamedTemporaryFile
+
+SCREENSHOT_UTILITY = '/usr/bin/scrot'
+
+def screenshot_args(file_path, capture_type="screen"):
+  args = []
+  
+  # Capture type
+  args.append(
+    {
+      "screen": "",
+      "selection": "-s"
+    }.get(capture_type)
+  )
+
+  # High quality
+  args.append("-q 100")
+
+  # File path
+  args.append(file_path)
+
+  return " ".join(args)
+
+def feed_xclipboard(image_file):
+    Popen("xclip -t image/png -sel clip -i {}".format(image_file.name), shell=True, stdin=PIPE)
+
+def take_screenshot(image_file, capture_type):
+    
+    filename = image_file.name
+    command = "{} {}".format(
+      SCREENSHOT_UTILITY,
+      screenshot_args(filename, capture_type=capture_type)
+    )
+    p = Popen(command, shell=True)
+    sts = os.waitpid(p.pid, 0)[1]
+    return fp
+
+
+if __name__ == '__main__':
+  capture_type = sys.argv[1]
+  fp = NamedTemporaryFile(
+    suffix='.png',
+    prefix='screenshot_'
+  )
+  screenshot = take_screenshot(fp, capture_type)
+  feed_xclipboard(fp)
