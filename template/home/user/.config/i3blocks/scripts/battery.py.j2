@@ -49,9 +49,10 @@ status, percent, time_remaining = parse_acpi()
 pango = '<span color="{}"><span font="FontAwesome">{}</span> <span>{}%</span></span>'.format(battery_color(percent), battery_icon(percent), percent)
 if status == 'Charging':
   pango = '<span font="FontAwesome" color="#00FFFF">\uf1e6</span> {}'.format(pango)
-elif status == 'Unknown':
-  pango = '<span font="FontAwesome" color="#00FFFF">?</span> {}'.format(pango)
-if percent < PERCENT_CRITICAL:
-  notify_battery_critical()
+else:
+  if status == 'Unknown':
+    pango = '<span font="FontAwesome" color="#00FFFF">?</span> {}'.format(pango)
+  if percent < PERCENT_CRITICAL:
+    notify_battery_critical()
 
 print(pango)
