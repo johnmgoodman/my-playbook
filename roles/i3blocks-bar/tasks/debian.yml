@@ -1,0 +1,4 @@
+- name: apt install i3blocks
+  apt:
+    name: i3blocks
+  become: yes

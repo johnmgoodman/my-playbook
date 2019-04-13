@@ -1,0 +1,31 @@
+# i3blocks
+
+- import_tasks: debian.yml
+  when: ansible_facts['os_family']|lower == 'debian'
+
+- name: make dir
+  file:
+    state: directory
+    path: "{{ansible_facts.user_dir}}/.config/i3blocks/scripts"
+- name: copy i3blocks python files
+  template:
+    src: "templates/home/user/.config/i3blocks/scripts/{{item}}.j2"
+    dest: "{{ansible_facts.user_dir}}/.config/i3blocks/scripts/{{item}}"
+    mode: '0755'
+  loop: ["battery.py", "disk.py", "loadavg.py", "memory.py", "network.py"]
+- name: copy i3blocks config
+  template:
+    src: "templates/home/user/.config/i3blocks/config.j2"
+    dest: "{{ansible_facts.user_dir}}/.config/i3blocks/config"
+- name: configure i3 to use i3blocks
+  blockinfile:
+    path: "{{ansible_facts.user_dir}}/.config/i3/config"
+    backup: yes
+    block: |
+      bar {
+        status_command i3blocks
+        tray_output primary
+        colors {
+          background #0e0e0e
+        }
+      }

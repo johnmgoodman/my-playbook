@@ -2,6 +2,7 @@
 - hosts: all
   roles:
     - bash-prompt
+    - i3blocks-bar
   connection: local
   vars:
     raise_volume_keysym: XF86AudioRaiseVolume
@@ -12,40 +13,6 @@
     i3lock_background_image: "{{ansible_facts.user_dir}}/Pictures/sunrise.png"
   tasks:
 
-  # i3blocks
-  #- name: mkdir -p ~/.config/i3blocks/scripts
-  #  shell: mkdir -p ~/.config/i3blocks/scripts
-  - name: make dir
-    file:
-      state: directory
-      path: "{{ansible_facts.user_dir}}/.config/i3blocks/scripts"
-  - name: apt install i3blocks
-    apt:
-      name: i3blocks
-    become: yes
-  - name: copy i3blocks python files
-    template:
-      src: "template/home/user/.config/i3blocks/scripts/{{item}}.j2"
-      dest: "{{ansible_facts.user_dir}}/.config/i3blocks/scripts/{{item}}"
-      mode: '0755'
-    loop: ["battery.py", "disk.py", "loadavg.py", "memory.py", "network.py"]
-  - name: copy i3blocks config
-    template:
-      src: "template/home/user/.config/i3blocks/config.j2"
-      dest: "{{ansible_facts.user_dir}}/.config/i3blocks/config"
-  - name: configure i3 to use i3blocks
-    blockinfile:
-      path: "{{ansible_facts.user_dir}}/.config/i3/config"
-      backup: yes
-      block: |
-        bar {
-          status_command i3blocks
-          tray_output primary
-          colors {
-            background #0e0e0e
-          }
-        }
-  
   # i3 keyboard bindsyms: volume
   - name: add volume control bindsyms to i3 config
     lineinfile:
