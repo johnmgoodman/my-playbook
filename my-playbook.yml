@@ -109,6 +109,26 @@
     loop:
       - "bindsym Print exec --no-startup-id {{ansible_facts.user_dir}}/scripts/screenshot/screenshot.py screen"
       - "bindsym Shift+Print exec --no-startup-id {{ansible_facts.user_dir}}/scripts/screenshot/screenshot.py selection"
+  
+  # wicd-on
+  - name: make dir
+    file:
+      state: directory
+      path: "{{item}}"
+    loop:
+      - "{{ansible_facts.user_dir}}/bin"
+      - "{{ansible_facts.user_dir}}/scripts/wicd-on"
+  - name: copy wicd-on scripts
+    template:
+      src: "template/home/user/scripts/wicd-on/{{item}}.j2"
+      dest: "{{ansible_facts.user_dir}}/scripts/wicd-on/{{item}}"
+      mode: '0755'
+    loop: ["wicd-on.py", "wicd-on.sh"]
+  - name: add link to ~/bin
+    file:
+      state: link
+      path: "{{ansible_facts.user_dir}}/bin/wicd-on"
+      src: "{{ansible_facts.user_dir}}/scripts/wicd-on/wicd-on.sh"
 
   # blah blah
   - name: blah

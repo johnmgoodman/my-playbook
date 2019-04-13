@@ -1,0 +1,82 @@
+#!/usr/bin/env python3
+
+import re
+import os
+from subprocess import check_output
+
+def read_known_networks():
+    print("retrieving known networks")
+    networks_string=os.environ.get('WICD_ON_NETWORKS')
+    if networks_string is None:
+        return networks_string
+    known_networks = networks_string.split(':') # yeah yeah essids can have :
+    return known_networks
+
+def get_networks():
+    print("reading available networks")
+    networks_string = check_output(['wicd-cli','-y','-l']).decode('utf-8')
+    networks_string_array = networks_string.splitlines()
+    networks_string_array.pop(0)
+    scan_results = []
+    for line_index, network_string in enumerate(networks_string_array):
+        network_string_array = network_string.split('\t')
+        network = {
+            'index': network_string_array[0],
+            'bssid': network_string_array[1],
+            'channel': network_string_array[2],
+            'essid': network_string_array[3]
+        }
+        scan_results.append(network)
+    if 0 == len(scan_results):
+        return None
+    return scan_results
+
+def scan_for_networks():
+    print("scanning for networks")
+    check_output(['wicd-cli','-yS'])
+
+def connect(network):
+    print("connecting to: %s" % network.get('essid'))
+    check_output(['wicd-cli','-y','-c','-n',network.get('index')])
+
+def proc_get_known_networks():
+    known_networks = read_known_networks()
+    if known_networks is None:
+        print("error: WICD_ON_NETWORKS not defined: no known networks")
+        exit(-1)
+    return known_networks
+
+def proc_get_available_networks():
+    available_networks = get_networks()
+    if available_networks is None:
+        print("warning: scan results empty: attempting new scan")
+        scan_for_networks()
+        available_networks = get_networks()
+        if available_networks is None:
+            print("error: scan results empty: unable to find available networks")
+            exit(-1)
+    return available_networks
+
+def proc_connect_to_first_available_known_network():
+    known_networks = proc_get_known_networks()
+    available_networks = proc_get_available_networks()
+
+    for known_network in known_networks:
+        for available_network in available_networks:
+            if known_network == available_network.get('essid'):
+                connect(available_network)
+                return True
+    print("no known networks available")
+    return False
+
+print("starting wicd-on")
+if proc_connect_to_first_available_known_network():
+    print("success")
+    exit()
+print("trying to scan again")
+scan_for_networks()
+if proc_connect_to_first_available_known_network():
+    print("success")
+    exit()
+print("failure")
+exit(-1)
