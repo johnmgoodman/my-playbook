@@ -6,11 +6,11 @@
 - name: make dir
   file:
     state: directory
-    path: "{{ansible_facts.user_dir}}/scripts"
-- name: copy lock script to ~/scripts/
+    path: "{{ansible_facts.user_dir}}/scripts/i3-dpms"
+- name: copy lock script to ~/scripts/i3-dpms
   template:
-    src: "templates/home/user/scripts/{{item}}.j2"
-    dest: "{{ansible_facts.user_dir}}/scripts/{{item}}"
+    src: "templates/home/user/scripts/i3-dpms/{{item}}.j2"
+    dest: "{{ansible_facts.user_dir}}/scripts/i3-dpms/{{item}}"
     mode: '0755'
   loop: ["lock.sh", "autolock.sh"]
 - name: add screen locking / sleep bindsyms to i3
@@ -18,5 +18,5 @@
     path: "{{ansible_facts.user_dir}}/.config/i3/config"
     line: "{{item}}"
   loop:
-    - "bindsym {{lock_screen_keysym}} exec {{ansible_facts.user_dir}}/scripts/lock.sh"
-    - "exec --no-startup-id {{ansible_facts.user_dir}}/scripts/autolock.sh"
+    - "bindsym {{lock_screen_keysym}} exec {{ansible_facts.user_dir}}/scripts/i3-dpms/lock.sh"
+    - "exec --no-startup-id {{ansible_facts.user_dir}}/scripts/i3-dpms/autolock.sh"
