@@ -1,0 +1,25 @@
+---
+# tasks file for bash-aliases
+- debug:
+    var: bash_aliases_file
+- name: bash aliases file exists
+  file:
+    state: touch
+    path: "{{bash_aliases_file}}"
+- name: bash aliases file populated
+  lineinfile:
+    path: "{{bash_aliases_file}}"
+    line: "{{item}}"
+  loop: "{{bash_aliases}}"
+- name: source from ~/.bashrc
+  blockinfile:
+    path: "{{ansible_facts.user_dir}}/.bashrc"
+    block: |
+      # Alias definitions.
+      # You may want to put all your additions into a separate file like
+      # ~/.bash_aliases, instead of adding them here directly.
+      # See /usr/share/doc/bash-doc/examples in the bash-doc package.
+
+      if [ -f {{bash_aliases_file}} ]; then
+          . {{bash_aliases_file}}
+      fi

@@ -9,6 +9,13 @@
     - i3-dpms
     - i3-screencap
     - wicd-on
+    - role: bash-aliases
+      vars:
+        bash_aliases:
+          - alias poweroff='sudo poweroff';
+          - alias reboot='sudo reboot';
+          - alias python='python3';
+          - alias pip='pip3';
   connection: local
   tasks:
 
