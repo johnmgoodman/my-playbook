@@ -4,9 +4,7 @@
   file:
     state: directory
     path: "{{item}}"
-  loop:
-    - "{{ansible_facts.user_dir}}/bin"
-    - "{{ansible_facts.user_dir}}/scripts/wicd-on"
+  loop: ["{{ansible_facts.user_dir}}/scripts/wicd-on"]
 - name: copy wicd-on scripts
   template:
     src: "templates/home/user/scripts/wicd-on/{{item}}.j2"

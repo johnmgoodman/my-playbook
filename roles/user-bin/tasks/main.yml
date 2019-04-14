@@ -1,0 +1,8 @@
+- name: make ~/bin
+  file:
+    state: directory
+    path: "{{ansible_facts.user_dir}}/bin"
+- name: add ~/bin to PATH
+  lineinfile:
+    line: "export PATH=\"$HOME/bin:$PATH\";"
+    path: "{{user_bin_set_path_file}}"

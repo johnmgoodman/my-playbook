@@ -1,0 +1,2 @@
+---
+user_bin_set_path_file: "{{ansible_facts.user_dir}}/.bash_profile"
