@@ -2,10 +2,15 @@
 # tasks file for bash-aliases
 - debug:
     var: bash_aliases_file
-- name: bash aliases file exists
+- name: get info on bash aliases file
+  stat:
+    path: "{{bash_aliases_file}}"
+  register: bash_aliases_file_stat
+- name: create bash aliases file
   file:
     state: touch
     path: "{{bash_aliases_file}}"
+  when: bash_aliases_file_stat.stat.exists == False
 - name: bash aliases file populated
   lineinfile:
     path: "{{bash_aliases_file}}"
