@@ -1,3 +1,4 @@
 ---
 dependencies:
+  - role: wicd-wifi
   - role: user-bin

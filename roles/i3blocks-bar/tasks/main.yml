@@ -18,6 +18,7 @@
     src: "templates/home/user/.config/i3blocks/config.j2"
     dest: "{{ansible_facts.user_dir}}/.config/i3blocks/config"
 - name: configure i3 to use i3blocks
+  notify: i3 restart inplace
   blockinfile:
     path: "{{ansible_facts.user_dir}}/.config/i3/config"
     backup: yes

@@ -1,0 +1,4 @@
+- name: apt install wicd
+  apt:
+    name: wicd
+  become: yes

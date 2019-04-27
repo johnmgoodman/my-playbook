@@ -1,0 +1,6 @@
+---
+# handlers file for i3
+- name: i3 reload config
+  shell: i3-msg reload
+- name: i3 restart inplace
+  shell: i3-msg restart || true

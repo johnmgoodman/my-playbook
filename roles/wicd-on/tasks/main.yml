@@ -16,3 +16,13 @@
     state: link
     path: "{{ansible_facts.user_dir}}/bin/wicd-on"
     src: "{{ansible_facts.user_dir}}/scripts/wicd-on/wicd-on.sh"
+- name: check for wicd networks in bash profile
+  shell: "grep WICD_ON_NETWORKS {{ ansible_facts.user_dir }}/.bash_profile"
+  register: grep_wicd_on_networks
+  failed_when: grep_wicd_on_networks.rc == 2
+  changed_when: grep_wicd_on_networks.rc != 0
+- name: create environment variable for known networks
+  lineinfile:
+    path: "{{ansible_facts.user_dir}}/.bash_profile"
+    line: 'export WICD_ON_NETWORKS="";'
+  when: grep_wicd_on_networks.rc != 0

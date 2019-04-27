@@ -1,0 +1,4 @@
+- name: apt install i3
+  apt:
+    name: i3
+  become: yes

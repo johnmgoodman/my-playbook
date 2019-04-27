@@ -1,12 +1,13 @@
 ---
 - hosts: all
-  vars:
-    i3lock_background_image: "{{ansible_facts.user_dir}}/Pictures/sunrise.png"
   roles:
     - bash-prompt
+    - i3
     - i3blocks-bar
     - i3-volume
-    - i3-dpms
+    - role: i3-dpms
+      vars:
+        i3lock_background_image: "{{ansible_facts.user_dir}}/Pictures/sunrise.png"
     - i3-screencap
     - wicd-on
     - role: bash-aliases
